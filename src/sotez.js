@@ -528,6 +528,7 @@ node.activeProvider = DEFAULT_PROVIDER;
 node.debugMode = false;
 node.async = true;
 node.isZeronet = false;
+node.net = 'main';
 
 /**
  * @description Enable additional logging by enabling debug mode
@@ -546,9 +547,10 @@ node.setDebugMode = (t: boolean): void => {
  * @example
  * node.setProvider('http://127.0.0.1:8732');
  */
-node.setProvider = (provider: string, isZeronet: boolean) => {
-  if (typeof isZeronet !== 'undefined') node.isZeronet = isZeronet;
+node.setProvider = (provider: string, isZeronet: boolean = false, net: string = 'main') => {
+  node.isZeronet = isZeronet;
   node.activeProvider = provider;
+  node.net = net;
 };
 
 /**
@@ -567,7 +569,7 @@ node.resetProvider = (): void => {
  * @param {String} method The request method. Either 'GET' or 'POST'
  * @returns {Promise} The response of the query
  * @example
- * node.query('/chains/main/blocks/head')
+ * node.query(`/chains/${node.net}/blocks/head`)
  *  .then(head => console.log(head));
  */
 node.query = (path: string, payload: ?any, method: ?string): Promise<any> => {
@@ -1456,7 +1458,7 @@ rpc.account = async ({
  *   .then(balance => console.log(balance))
  */
 rpc.getBalance = (address: string): Promise<string> => (
-  node.query(`/chains/main/blocks/head/context/contracts/${address}/balance`)
+  node.query(`/chains/${node.net}/blocks/head/context/contracts/${address}/balance`)
 );
 
 /**
@@ -1468,7 +1470,7 @@ rpc.getBalance = (address: string): Promise<string> => (
  *   .then(delegate => console.log(delegate))
  */
 rpc.getDelegate = (address: string): Promise<string | boolean> => (
-  node.query(`/chains/main/blocks/head/context/contracts/${address}/delegate`)
+  node.query(`/chains/${node.net}/blocks/head/context/contracts/${address}/delegate`)
     .then((delegate) => {
       if (delegate) { return delegate; }
       return false;
@@ -1484,7 +1486,7 @@ rpc.getDelegate = (address: string): Promise<string | boolean> => (
  *   .then(({ manager, key }) => console.log(manager, key))
  */
 rpc.getManager = (address: string): Promise<{ manager: string, key: string }> => (
-  node.query(`/chains/main/blocks/head/context/contracts/${address}/manager_key`)
+  node.query(`/chains/${node.net}/blocks/head/context/contracts/${address}/manager_key`)
 );
 
 /**
@@ -1496,7 +1498,7 @@ rpc.getManager = (address: string): Promise<{ manager: string, key: string }> =>
  *   .then(counter => console.log(counter))
  */
 rpc.getCounter = (address: string): Promise<string> => (
-  node.query(`/chains/main/blocks/head/context/contracts/${address}/counter`)
+  node.query(`/chains/${node.net}/blocks/head/context/contracts/${address}/counter`)
 );
 
 /**
@@ -1526,7 +1528,7 @@ rpc.getCounter = (address: string): Promise<string> => (
  *   ))
  */
 rpc.getBaker = (address: string): Promise<Baker> => (
-  node.query(`/chains/main/blocks/head/context/delegates/${address}`)
+  node.query(`/chains/${node.net}/blocks/head/context/delegates/${address}`)
 );
 
 /**
@@ -1536,7 +1538,7 @@ rpc.getBaker = (address: string): Promise<Baker> => (
  * rpc.getHeader().then(header => console.log(header))
  */
 rpc.getHeader = (): Promise<Header> => (
-  node.query('/chains/main/blocks/head/header')
+  node.query(`/chains/${node.net}/blocks/head/header`)
 );
 
 /**
@@ -1545,7 +1547,7 @@ rpc.getHeader = (): Promise<Header> => (
  * @example
  * rpc.getHead().then(head => console.log(head))
  */
-rpc.getHead = (): Promise<Head> => node.query('/chains/main/blocks/head');
+rpc.getHead = (): Promise<Head> => node.query(`/chains/${node.net}/blocks/head`);
 
 /**
  * @description Get the current head block hash of the chain
@@ -1553,7 +1555,7 @@ rpc.getHead = (): Promise<Head> => node.query('/chains/main/blocks/head');
  * @example
  * rpc.getHeadHash().then(headHash => console.log(headHash))
  */
-rpc.getHeadHash = (): Promise<string> => node.query('/chains/main/blocks/head/hash');
+rpc.getHeadHash = (): Promise<string> => node.query(`/chains/${node.net}/blocks/head/hash`);
 
 /**
  * @description Ballots casted so far during a voting period
@@ -1562,7 +1564,7 @@ rpc.getHeadHash = (): Promise<string> => node.query('/chains/main/blocks/head/ha
  * rpc.getBallotList().then(ballotList => console.log(ballotList))
  */
 rpc.getBallotList = (): Promise<Array<any>> => (
-  node.query('/chains/main/blocks/head/votes/ballot_list')
+  node.query(`/chains/${node.net}/blocks/head/votes/ballot_list`)
 );
 
 /**
@@ -1575,7 +1577,7 @@ rpc.getBallotList = (): Promise<Array<any>> => (
  * )
  */
 rpc.getProposals = (): Promise<Array<any>> => (
-  node.query('/chains/main/blocks/head/votes/proposals')
+  node.query(`/chains/${node.net}/blocks/head/votes/proposals`)
 );
 
 /**
@@ -1585,7 +1587,7 @@ rpc.getProposals = (): Promise<Array<any>> => (
  * rpc.getBallots().then(({ yay, nay, pass }) => console.log(yay, nay, pass))
  */
 rpc.getBallots = (): Promise<{ yay: number, nay: number, pass: number }> => (
-  node.query('/chains/main/blocks/head/votes/ballots')
+  node.query(`/chains/${node.net}/blocks/head/votes/ballots`)
 );
 
 /**
@@ -1595,7 +1597,7 @@ rpc.getBallots = (): Promise<{ yay: number, nay: number, pass: number }> => (
  * rpc.getListings().then(listings => console.log(listings))
  */
 rpc.getListings = (): Promise<Array<any>> => (
-  node.query('/chains/main/blocks/head/votes/listings')
+  node.query(`/chains/${node.net}/blocks/head/votes/listings`)
 );
 
 /**
@@ -1605,7 +1607,7 @@ rpc.getListings = (): Promise<Array<any>> => (
  * rpc.getCurrentProposal().then(currentProposal => console.log(currentProposal))
  */
 rpc.getCurrentProposal = (): Promise<string> => (
-  node.query('/chains/main/blocks/head/votes/current_proposal')
+  node.query(`/chains/${node.net}/blocks/head/votes/current_proposal`)
 );
 
 /**
@@ -1615,7 +1617,7 @@ rpc.getCurrentProposal = (): Promise<string> => (
  * rpc.getCurrentPeriod().then(currentPeriod => console.log(currentPeriod))
  */
 rpc.getCurrentPeriod = () => (
-  node.query('/chains/main/blocks/head/votes/current_period_kind')
+  node.query(`/chains/${node.net}/blocks/head/votes/current_period_kind`)
 );
 
 /**
@@ -1625,7 +1627,7 @@ rpc.getCurrentPeriod = () => (
  * rpc.getCurrentQuorum().then(currentQuorum => console.log(currentQuorum))
  */
 rpc.getCurrentQuorum = (): Promise<number> => (
-  node.query('/chains/main/blocks/head/votes/current_quorum')
+  node.query(`/chains/${node.net}/blocks/head/votes/current_quorum`)
 );
 
 /**
@@ -1873,7 +1875,7 @@ rpc.simulateOperation = ({
     path,
     curve,
   }).then(fullOp => (
-    node.query('/chains/main/blocks/head/helpers/scripts/run_operation', fullOp.opOb)
+    node.query(`/chains/${node.net}/blocks/head/helpers/scripts/run_operation`, fullOp.opOb)
   ))
 );
 
@@ -1978,7 +1980,7 @@ rpc.inject = (opOb: OperationObject, sopbytes: string): Promise<any> => {
   const opResponse = [];
   let errors = [];
 
-  return node.query('/chains/main/blocks/head/helpers/preapply/operations', [opOb])
+  return node.query(`/chains/${node.net}/blocks/head/helpers/preapply/operations`, [opOb])
     .then((f) => {
       if (!Array.isArray(f)) {
         throw new Error({ error: 'RPC Fail', errors: [] });
@@ -2258,7 +2260,7 @@ rpc.registerDelegate = async ({
  */
 rpc.typecheckCode = (code: string): Promise<any> => {
   const _code = utility.ml2mic(code);
-  return node.query('/chains/main/blocks/head/helpers/scripts/typecheck_code', { program: _code, gas: '10000' });
+  return node.query(`/chains/${node.net}/blocks/head/helpers/scripts/typecheck_code`, { program: _code, gas: '10000' });
 };
 
 /**
@@ -2273,7 +2275,7 @@ rpc.packData = (data: string, type: string): Promise<any> => {
     type: utility.sexp2mic(type),
     gas: '4000000',
   };
-  return node.query('/chains/main/blocks/head/helpers/scripts/pack_data', check);
+  return node.query(`/chains/${node.net}/blocks/head/helpers/scripts/pack_data`, check);
 };
 
 /**
@@ -2288,7 +2290,7 @@ rpc.typecheckData = (data: string, type: string): Promise<any> => {
     type: utility.sexp2mic(type),
     gas: '4000000',
   };
-  return node.query('/chains/main/blocks/head/helpers/scripts/typecheck_data', check);
+  return node.query(`/chains/${node.net}/blocks/head/helpers/scripts/typecheck_data`, check);
 };
 
 /**
@@ -2302,7 +2304,7 @@ rpc.typecheckData = (data: string, type: string): Promise<any> => {
  */
 rpc.runCode = (code: string, amount: number, input: string, storage: string, trace: boolean = false): Promise<any> => {
   const ep = trace ? 'trace_code' : 'run_code';
-  return node.query(`/chains/main/blocks/head/helpers/scripts/${ep}`, {
+  return node.query(`/chains/${node.net}/blocks/head/helpers/scripts/${ep}`, {
     script: utility.ml2mic(code),
     amount: `${utility.mutez(amount)}`,
     input: utility.sexp2mic(input),
@@ -2389,7 +2391,7 @@ contract.originate = ({
  * @returns {Promise} The storage of the contract
  */
 contract.storage = (contractAddress: string): Promise<any> => (
-  node.query(`/chains/main/blocks/head/context/contracts/${contractAddress}/storage`)
+  node.query(`/chains/${node.net}/blocks/head/context/contracts/${contractAddress}/storage`)
 );
 
 /**
@@ -2398,7 +2400,7 @@ contract.storage = (contractAddress: string): Promise<any> => (
  * @returns {Promise} The contract
  */
 contract.load = (contractAddress: string): Promise<any> => (
-  node.query(`/chains/main/blocks/head/context/contracts/${contractAddress}`)
+  node.query(`/chains/${node.net}/blocks/head/context/contracts/${contractAddress}`)
 );
 
 /**

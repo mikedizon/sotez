@@ -22681,6 +22681,7 @@ node.activeProvider = DEFAULT_PROVIDER;
 node.debugMode = false;
 node.async = true;
 node.isZeronet = false;
+node.net = 'main';
 /**
  * @description Enable additional logging by enabling debug mode
  * @param {Boolen} t Debug mode value
@@ -22700,9 +22701,12 @@ node.setDebugMode = function (t) {
  */
 
 
-node.setProvider = function (provider, isZeronet) {
-  if (typeof isZeronet !== 'undefined') node.isZeronet = isZeronet;
+node.setProvider = function (provider) {
+  var isZeronet = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var net = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'main';
+  node.isZeronet = isZeronet;
   node.activeProvider = provider;
+  node.net = net;
 };
 /**
  * @description Reset the provider to the default provider
@@ -22721,7 +22725,7 @@ node.resetProvider = function () {
  * @param {String} method The request method. Either 'GET' or 'POST'
  * @returns {Promise} The response of the query
  * @example
- * node.query('/chains/main/blocks/head')
+ * node.query(`/chains/${node.net}/blocks/head`)
  *  .then(head => console.log(head));
  */
 
@@ -23926,7 +23930,7 @@ function () {
 
 
 rpc.getBalance = function (address) {
-  return node.query("/chains/main/blocks/head/context/contracts/".concat(address, "/balance"));
+  return node.query("/chains/".concat(node.net, "/blocks/head/context/contracts/").concat(address, "/balance"));
 };
 /**
  * @description Get the delegate for a contract
@@ -23939,7 +23943,7 @@ rpc.getBalance = function (address) {
 
 
 rpc.getDelegate = function (address) {
-  return node.query("/chains/main/blocks/head/context/contracts/".concat(address, "/delegate")).then(function (delegate) {
+  return node.query("/chains/".concat(node.net, "/blocks/head/context/contracts/").concat(address, "/delegate")).then(function (delegate) {
     if (delegate) {
       return delegate;
     }
@@ -23958,7 +23962,7 @@ rpc.getDelegate = function (address) {
 
 
 rpc.getManager = function (address) {
-  return node.query("/chains/main/blocks/head/context/contracts/".concat(address, "/manager_key"));
+  return node.query("/chains/".concat(node.net, "/blocks/head/context/contracts/").concat(address, "/manager_key"));
 };
 /**
  * @description Get the counter for an contract
@@ -23971,7 +23975,7 @@ rpc.getManager = function (address) {
 
 
 rpc.getCounter = function (address) {
-  return node.query("/chains/main/blocks/head/context/contracts/".concat(address, "/counter"));
+  return node.query("/chains/".concat(node.net, "/blocks/head/context/contracts/").concat(address, "/counter"));
 };
 /**
  * @description Get the baker information for an address
@@ -24002,7 +24006,7 @@ rpc.getCounter = function (address) {
 
 
 rpc.getBaker = function (address) {
-  return node.query("/chains/main/blocks/head/context/delegates/".concat(address));
+  return node.query("/chains/".concat(node.net, "/blocks/head/context/delegates/").concat(address));
 };
 /**
  * @description Get the header of the current head
@@ -24013,7 +24017,7 @@ rpc.getBaker = function (address) {
 
 
 rpc.getHeader = function () {
-  return node.query('/chains/main/blocks/head/header');
+  return node.query("/chains/".concat(node.net, "/blocks/head/header"));
 };
 /**
  * @description Get the current head block of the chain
@@ -24024,7 +24028,7 @@ rpc.getHeader = function () {
 
 
 rpc.getHead = function () {
-  return node.query('/chains/main/blocks/head');
+  return node.query("/chains/".concat(node.net, "/blocks/head"));
 };
 /**
  * @description Get the current head block hash of the chain
@@ -24035,7 +24039,7 @@ rpc.getHead = function () {
 
 
 rpc.getHeadHash = function () {
-  return node.query('/chains/main/blocks/head/hash');
+  return node.query("/chains/".concat(node.net, "/blocks/head/hash"));
 };
 /**
  * @description Ballots casted so far during a voting period
@@ -24046,7 +24050,7 @@ rpc.getHeadHash = function () {
 
 
 rpc.getBallotList = function () {
-  return node.query('/chains/main/blocks/head/votes/ballot_list');
+  return node.query("/chains/".concat(node.net, "/blocks/head/votes/ballot_list"));
 };
 /**
  * @description List of proposals with number of supporters
@@ -24060,7 +24064,7 @@ rpc.getBallotList = function () {
 
 
 rpc.getProposals = function () {
-  return node.query('/chains/main/blocks/head/votes/proposals');
+  return node.query("/chains/".concat(node.net, "/blocks/head/votes/proposals"));
 };
 /**
  * @description Sum of ballots casted so far during a voting period
@@ -24071,7 +24075,7 @@ rpc.getProposals = function () {
 
 
 rpc.getBallots = function () {
-  return node.query('/chains/main/blocks/head/votes/ballots');
+  return node.query("/chains/".concat(node.net, "/blocks/head/votes/ballots"));
 };
 /**
  * @description List of delegates with their voting weight, in number of rolls
@@ -24082,7 +24086,7 @@ rpc.getBallots = function () {
 
 
 rpc.getListings = function () {
-  return node.query('/chains/main/blocks/head/votes/listings');
+  return node.query("/chains/".concat(node.net, "/blocks/head/votes/listings"));
 };
 /**
  * @description Current proposal under evaluation
@@ -24093,7 +24097,7 @@ rpc.getListings = function () {
 
 
 rpc.getCurrentProposal = function () {
-  return node.query('/chains/main/blocks/head/votes/current_proposal');
+  return node.query("/chains/".concat(node.net, "/blocks/head/votes/current_proposal"));
 };
 /**
  * @description Current period kind
@@ -24104,7 +24108,7 @@ rpc.getCurrentProposal = function () {
 
 
 rpc.getCurrentPeriod = function () {
-  return node.query('/chains/main/blocks/head/votes/current_period_kind');
+  return node.query("/chains/".concat(node.net, "/blocks/head/votes/current_period_kind"));
 };
 /**
  * @description Current expected quorum
@@ -24115,7 +24119,7 @@ rpc.getCurrentPeriod = function () {
 
 
 rpc.getCurrentQuorum = function () {
-  return node.query('/chains/main/blocks/head/votes/current_quorum');
+  return node.query("/chains/".concat(node.net, "/blocks/head/votes/current_quorum"));
 };
 /**
  * @description Check for the inclusion of an operation in new blocks
@@ -24427,7 +24431,7 @@ rpc.simulateOperation = function (_ref23) {
     path: path,
     curve: curve
   }).then(function (fullOp) {
-    return node.query('/chains/main/blocks/head/helpers/scripts/run_operation', fullOp.opOb);
+    return node.query("/chains/".concat(node.net, "/blocks/head/helpers/scripts/run_operation"), fullOp.opOb);
   });
 };
 /**
@@ -24593,7 +24597,7 @@ function () {
 rpc.inject = function (opOb, sopbytes) {
   var opResponse = [];
   var errors = [];
-  return node.query('/chains/main/blocks/head/helpers/preapply/operations', [opOb]).then(function (f) {
+  return node.query("/chains/".concat(node.net, "/blocks/head/helpers/preapply/operations"), [opOb]).then(function (f) {
     if (!Array.isArray(f)) {
       throw new Error({
         error: 'RPC Fail',
@@ -25076,7 +25080,7 @@ function () {
 rpc.typecheckCode = function (code) {
   var _code = utility.ml2mic(code);
 
-  return node.query('/chains/main/blocks/head/helpers/scripts/typecheck_code', {
+  return node.query("/chains/".concat(node.net, "/blocks/head/helpers/scripts/typecheck_code"), {
     program: _code,
     gas: '10000'
   });
@@ -25095,7 +25099,7 @@ rpc.packData = function (data, type) {
     type: utility.sexp2mic(type),
     gas: '4000000'
   };
-  return node.query('/chains/main/blocks/head/helpers/scripts/pack_data', check);
+  return node.query("/chains/".concat(node.net, "/blocks/head/helpers/scripts/pack_data"), check);
 };
 /**
  * @description Typechecks data against a type
@@ -25111,7 +25115,7 @@ rpc.typecheckData = function (data, type) {
     type: utility.sexp2mic(type),
     gas: '4000000'
   };
-  return node.query('/chains/main/blocks/head/helpers/scripts/typecheck_data', check);
+  return node.query("/chains/".concat(node.net, "/blocks/head/helpers/scripts/typecheck_data"), check);
 };
 /**
  * @description Runs or traces code against an input and storage
@@ -25127,7 +25131,7 @@ rpc.typecheckData = function (data, type) {
 rpc.runCode = function (code, amount, input, storage) {
   var trace = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
   var ep = trace ? 'trace_code' : 'run_code';
-  return node.query("/chains/main/blocks/head/helpers/scripts/".concat(ep), {
+  return node.query("/chains/".concat(node.net, "/blocks/head/helpers/scripts/").concat(ep), {
     script: utility.ml2mic(code),
     amount: "".concat(utility.mutez(amount)),
     input: utility.sexp2mic(input),
@@ -25255,7 +25259,7 @@ contract.originate = function (_ref43) {
 
 
 contract.storage = function (contractAddress) {
-  return node.query("/chains/main/blocks/head/context/contracts/".concat(contractAddress, "/storage"));
+  return node.query("/chains/".concat(node.net, "/blocks/head/context/contracts/").concat(contractAddress, "/storage"));
 };
 /**
  * @description Get the contract at a given address
@@ -25265,7 +25269,7 @@ contract.storage = function (contractAddress) {
 
 
 contract.load = function (contractAddress) {
-  return node.query("/chains/main/blocks/head/context/contracts/".concat(contractAddress));
+  return node.query("/chains/".concat(node.net, "/blocks/head/context/contracts/").concat(contractAddress));
 };
 /**
  * @description Watch a contract's storage based on a given interval
@@ -28717,7 +28721,7 @@ module.exports.makeKey = makeKey
 /* 412 */
 /***/ (function(module) {
 
-module.exports = {"_from":"elliptic@^6.0.0","_id":"elliptic@6.4.1","_inBundle":false,"_integrity":"sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"elliptic@^6.0.0","name":"elliptic","escapedName":"elliptic","rawSpec":"^6.0.0","saveSpec":null,"fetchSpec":"^6.0.0"},"_requiredBy":["/browserify-sign","/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz","_shasum":"c2d0b7776911b86722c632c3c06c60f2f819939a","_spec":"elliptic@^6.0.0","_where":"/Users/andrewkishino/Workspace/sotez/node_modules/browserify-sign","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"bundleDependencies":false,"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"deprecated":false,"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.1"};
+module.exports = {"_args":[["elliptic@6.4.1","/Users/akishino/workspace/sotez"]],"_development":true,"_from":"elliptic@6.4.1","_id":"elliptic@6.4.1","_inBundle":false,"_integrity":"sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.1","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.1","saveSpec":null,"fetchSpec":"6.4.1"},"_requiredBy":["/browserify-sign","/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz","_spec":"6.4.1","_where":"/Users/akishino/workspace/sotez","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.1"};
 
 /***/ }),
 /* 413 */

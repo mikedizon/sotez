@@ -278,8 +278,9 @@ export type Node = {
   debugMode: boolean,
   async: boolean,
   isZeronet: boolean,
+  net: string,
   setDebugMode?: boolean => void,
-  setProvider?: (string, boolean) => void,
+  setProvider?: (string, boolean, string) => void,
   resetProvider?: () => void,
   query: (string, ?any, ?string) => Promise<any>,
 };
